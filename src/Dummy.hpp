@@ -7,6 +7,7 @@
 #include <SFML/System/Time.hpp>
 
 #include "Tracker.hpp"
+#include "SmoothMotionCalc.hpp"
 
 #define DEFSIZE 100.f
 #define DEFCOLOR sf::Color::Cyan
@@ -14,16 +15,16 @@
 class Dummy : public sf::Drawable, public Tracker
 {
 public:
-    Dummy();
-    Dummy(float,float, float=DEFSIZE, sf::Color = DEFCOLOR);
+    Dummy(float = DEFSIZE, sf::Color = DEFCOLOR);
     virtual ~Dummy()
     {
         _target = nullptr;
     }
 
-    void update(sf::Time);
-    void follow(const Tracker&);
+    void follow(const Tracker&, SmoothMotionCalc&);
 
+protected:
+    virtual void updateCurrent(sf::Time);
 
 private:
     void draw(sf::RenderTarget&, sf::RenderStates) const;
@@ -31,7 +32,8 @@ private:
     void centerOrigin(float radius);
 
     sf::CircleShape _shape;
-    Tracker const * _target;
+    Tracker const* _target;
+    SmoothMotionCalc* _motionComputer;
 
     // trajectory engine
 };

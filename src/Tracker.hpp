@@ -8,26 +8,41 @@
 class Tracker : public sf::Transformable
 {
 public:
-    virtual ~Tracker () 
+    virtual ~Tracker()
     {}
 
-    virtual sf::Vector2f getPosition() const 
+    virtual sf::Vector2f getPosition() const
     {
         return sf::Transformable::getPosition();
     }
 
+    void update(sf::Time dt)
+    {
+        updateCurrent(dt);
+        _previousPosition = getPosition();
+    }
+
+    sf::Vector2f getPreviousPosition() const { return _previousPosition; }
+protected:
+    virtual void updateCurrent(sf::Time dt)
+    {
+
+    }
+
+private:
+    sf::Vector2f _previousPosition;
 };
 
 class MouseTracker : public Tracker
 {
 public:
     explicit MouseTracker(const sf::RenderWindow& win)
-    : _window { &win }
+        : _window{ &win }
     {
 
     }
 
-    virtual ~MouseTracker ()
+    virtual ~MouseTracker()
     {
         _window = nullptr;
     }
@@ -39,5 +54,5 @@ public:
     }
 
 private:
-    sf::RenderWindow const * _window;
+    sf::RenderWindow const* _window;
 };

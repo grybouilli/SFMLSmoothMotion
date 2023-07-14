@@ -1,34 +1,28 @@
 #include "Dummy.hpp"
 
-Dummy::Dummy()
-: _shape {DEFSIZE}
-, _target { nullptr}
-{
-    _shape.setFillColor(DEFCOLOR);
-    centerOrigin(DEFSIZE);
-}
-
-Dummy::Dummy(float x, float y, float radius, sf::Color fillColor)
+Dummy::Dummy(float radius, sf::Color fillColor)
 : _shape {radius}
 , _target { nullptr }
+, _motionComputer {nullptr}
 {
     _shape.setFillColor(fillColor);
     centerOrigin(radius);
-    // _shape.setPosition(x,y);
 }
 
-void Dummy::update(sf::Time dt)
+void Dummy::updateCurrent(sf::Time dt)
 {
-    if(_target)
+    if(_target && _motionComputer)
     {
-        setPosition(_target->getPosition());
         //trajectory engine computes position
+        auto nextPosition = _motionComputer->getNextPosition(dt,_target->getPreviousPosition(), _target->getPosition());
+        setPosition(nextPosition);
     }
 }
 
-void Dummy::follow(const Tracker& tr)
+void Dummy::follow(const Tracker& tr, SmoothMotionCalc& motCal)
 {
     _target = &tr;
+    _motionComputer = &motCal;
 }
 
 void Dummy::draw(sf::RenderTarget& target, sf::RenderStates states) const
