@@ -13,7 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 # set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 # find_package(Threads REQUIRED)
 
-configure_file("assets/digitalo.ttf" ${CMAKE_BINARY_DIR}/assets/digitalo.ttf COPYONLY)
 configure_file("assets/roboto.ttf" ${CMAKE_BINARY_DIR}/assets/roboto.ttf COPYONLY)
 file(GLOB SOURCES "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
