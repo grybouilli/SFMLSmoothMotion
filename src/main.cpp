@@ -1,3 +1,4 @@
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "Dummy.hpp"
 #include "Tracker.hpp"
@@ -6,6 +7,15 @@
 
 #define TIME_PER_FRAME 1/60.f
 #define SF_TIME_PER_FRAME sf::seconds(TIME_PER_FRAME)
+
+enum Params
+{
+    F = 0,
+    ZETA,
+    R,
+    TOTAL
+};
+
 int main()
 {
     sf::RenderWindow mainWindow(sf::VideoMode(1000, 1000), "Smooth Motion Project");
@@ -14,8 +24,15 @@ int main()
     MouseTracker mouse{ mainWindow };
     SmoothMotionCalc calculator{ 6.f, .5f, 2.f, mouse.getPosition() };
 
-    Slider slider1 { 0.f, 1.f, 300.f, 20.f };
-    slider1.setPosition(10.f, 10.f);
+    std::vector<Slider> sliders {
+        Slider  { 0.001f, 10.f, 300.f, 20.f },
+        Slider  { 0.f, 5.f, 300.f, 20.f },
+        Slider  { -5.f, 5.f, 300.f, 20.f }
+     };
+    
+    sliders[Params::F].setPosition(10.f, 10.f);
+    sliders[Params::ZETA].setPosition(320.f, 10.f);
+    sliders[Params::R].setPosition(630.f, 10.f);
 
     dum.follow(mouse, calculator);
 
@@ -47,8 +64,27 @@ int main()
         if(mousePressed)
         {
             auto mousePos = sf::Mouse::getPosition(mainWindow);
-            if(slider1.getBounds().contains(mousePos.x, mousePos.y))
-                slider1.handleMouse(mousePos);
+            for(auto slider = 0; slider < sliders.size(); slider++)
+            {
+                if(sliders[slider].getBounds().contains(mousePos.x, mousePos.y))
+                {
+                    sliders[slider].handleMouse(mousePos);
+                    switch (slider)
+                    {
+                    case Params::F:
+                        calculator.setResponseSpeed(sliders[slider].getValue());
+                        break;
+                    case Params::ZETA:
+                        calculator.setDampingCoef(sliders[slider].getValue());
+                        break;
+                    case Params::R:
+                        calculator.setInitialResponse(sliders[slider].getValue());
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
         }
         elapsed += clock.restart();
         if(elapsed.asSeconds() > TIME_PER_FRAME)
@@ -59,7 +95,10 @@ int main()
         }
         mainWindow.clear(sf::Color::White);
         mainWindow.draw(dum);
-        mainWindow.draw(slider1);
+        for(auto& slider: sliders)
+        {
+            mainWindow.draw(slider);
+        }
         mainWindow.display();
     }
 

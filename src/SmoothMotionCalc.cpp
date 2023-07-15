@@ -24,7 +24,7 @@ SmoothMotionCalc::SmoothMotionCalc(
 
 void SmoothMotionCalc::setResponseSpeed(const float& f)
 {
-    if(f < 0.00001)
+    if(f < 0.00001f)
     {
         throw std::runtime_error("SmoothMotionCalc::setResponseSpeed : f can't be zero.");
     }
