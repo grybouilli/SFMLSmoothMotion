@@ -15,6 +15,8 @@ public:
     sf::Vector2f getNextPosition(sf::Time, const sf::Vector2f&, const sf::Vector2f&);
 private:
     void recomputeCoefs();
+
+    float _T_crit;
     float _f, _zeta, _r;
     float _k1, _k2, _k3;
 

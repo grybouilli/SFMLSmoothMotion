@@ -29,7 +29,7 @@ void SmoothMotionCalc::setResponseSpeed(const float& f)
         throw std::runtime_error("SmoothMotionCalc::setResponseSpeed : f can't be zero.");
     }
     _f = f;
-    _k1 = _zeta/(M_PI*f);
+    _k2 = 1/(4*M_PI*M_PI*_f*_f);
     
     recomputeCoefs();
 }
@@ -51,16 +51,20 @@ sf::Vector2f SmoothMotionCalc::getNextPosition(sf::Time dt, const sf::Vector2f& 
     float T= dt.asSeconds();
     
     sf::Vector2f inVel = (inCurrentPos - inPrevPos) / T;
-    
-    _outPosition = _outPosition + T * _outVelocity;
-    _outVelocity = _outVelocity + T * (inCurrentPos + _k3 * inVel - _outPosition - _k1*_outVelocity) / _k2;
+    int iterations = (int)std::ceil(T / _T_crit);
+    T /= iterations;
 
+    for (int i = 0; i < iterations; i++) {
+        _outPosition = _outPosition + T * _outVelocity;
+        _outVelocity = _outVelocity + T * (inCurrentPos + _k3 * inVel - _outPosition - _k1*_outVelocity) / _k2;
+    }
     return _outPosition;
 }
 
 
 void SmoothMotionCalc::recomputeCoefs()
 {
-    _k2 = 1/(4*M_PI*M_PI*_f*_f);
+    _k1 = _zeta/(M_PI*_f);
     _k3 = _r * _zeta / (2 * M_PI * _f);
+    _T_crit = 0.8f * (std::sqrt(4 * _k2 + _k1 * _k1) - _k1);
 }
