@@ -13,5 +13,5 @@ float SliderBack::getValue() const
 
 void SliderBack::setTo(const float& v, const float& m, const float& M)
 {
-    _range.value =(v-m) * (_range.max - _range.min) / (M-m) + _range.min;
+    _range.value = (v - m) * (_range.max - _range.min) / (M - m) + _range.min;
 }

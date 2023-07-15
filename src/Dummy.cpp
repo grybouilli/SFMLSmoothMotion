@@ -1,9 +1,9 @@
 #include "Dummy.hpp"
 
 Dummy::Dummy(float radius, sf::Color fillColor)
-: _shape {radius}
-, _target { nullptr }
-, _motionComputer {nullptr}
+    : _shape{ radius }
+    , _target{ nullptr }
+    , _motionComputer{ nullptr }
 {
     _shape.setFillColor(fillColor);
     centerOrigin(radius);
@@ -11,10 +11,10 @@ Dummy::Dummy(float radius, sf::Color fillColor)
 
 void Dummy::updateCurrent(sf::Time dt)
 {
-    if(_target && _motionComputer)
+    if (_target && _motionComputer)
     {
         //trajectory engine computes position
-        auto nextPosition = _motionComputer->getNextPosition(dt,_target->getPreviousPosition(), _target->getPosition());
+        auto nextPosition = _motionComputer->getNextPosition(dt, _target->getPreviousPosition(), _target->getPosition());
         setPosition(nextPosition);
     }
 }
